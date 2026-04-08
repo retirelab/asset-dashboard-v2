@@ -20,7 +20,7 @@ export default function App() {
   return (
     <div className="min-h-screen bg-surface-bg text-ink-primary font-sans">
       {/* Header */}
-      <header className="sticky top-0 z-10 backdrop-blur-sm bg-[rgba(15,15,14,0.92)] border-b border-surface-line px-6 py-3 flex justify-between items-center">
+      <header className="sticky top-0 z-10 bg-white border-b border-surface-line px-6 py-3 flex justify-between items-center" style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.06)', position: 'sticky', top: 0 }}>
         <div>
           <h1 className="text-[13px] font-semibold tracking-wide">우리집 자산 브리핑</h1>
           <p className="text-[10px] text-ink-muted mt-0.5">기준일 {REPORT_DATE} · 자산관리 매니저 분석</p>

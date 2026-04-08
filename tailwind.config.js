@@ -4,28 +4,28 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Pretendard', 'system-ui', 'sans-serif'],
+        sans: ['SUIT', 'system-ui', 'sans-serif'],
         mono: ['"DM Mono"', 'monospace'],
       },
       colors: {
         surface: {
-          bg:    '#0f0f0e',
-          card:  '#181816',
-          hover: '#222220',
-          line:  'rgba(255,255,255,0.07)',
+          bg:    '#F2F4F6',
+          card:  '#FFFFFF',
+          hover: '#F8F9FA',
+          line:  'rgba(0,0,0,0.06)',
         },
         ink: {
-          primary:   '#f0ede8',
-          secondary: '#9c9890',
-          muted:     '#5c5a56',
-          label:     '#7a7770',
+          primary:   '#191F28',
+          secondary: '#4E5968',
+          muted:     '#8B95A1',
+          label:     '#6B7684',
         },
         accent: {
-          blue:   '#4b8ef5',
-          green:  '#4caf82',
-          amber:  '#e8a94b',
-          red:    '#e05555',
-          teal:   '#38b6b6',
+          blue:   '#3182F6',
+          green:  '#0DC381',
+          amber:  '#FF9F0A',
+          red:    '#F04452',
+          teal:   '#00B4D8',
         },
       },
     },

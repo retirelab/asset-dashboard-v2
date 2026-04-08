@@ -125,11 +125,14 @@ export const retirement = {
 
 // ─── 순자산 추이 ──────────────────────────────────────────────
 export const netWorthHistory = [
-  { date: '22.06', amount: 218_000_000, isCurrent: false },
-  { date: '23.10', amount: 201_000_000, isCurrent: false },
-  { date: '24.07', amount: 251_000_000, isCurrent: false },
-  { date: '25.07', amount: 274_000_000, isCurrent: false },
-  { date: '26.04', amount: 295_500_000, isCurrent: true  },
+  { date: '22.06', total: 285_000_000, debt: 110_000_000, net: 175_000_000, financial:  28_000_000, realestate: 257_000_000, isCurrent: false },
+  { date: '22.12', total: 305_000_000, debt: 105_000_000, net: 200_000_000, financial:  35_000_000, realestate: 270_000_000, isCurrent: false },
+  { date: '23.06', total: 288_000_000, debt: 108_000_000, net: 180_000_000, financial:  31_000_000, realestate: 257_000_000, isCurrent: false },
+  { date: '23.12', total: 312_000_000, debt: 102_000_000, net: 210_000_000, financial:  45_000_000, realestate: 267_000_000, isCurrent: false },
+  { date: '24.06', total: 338_000_000, debt:  96_000_000, net: 242_000_000, financial:  55_000_000, realestate: 283_000_000, isCurrent: false },
+  { date: '24.12', total: 352_000_000, debt:  93_000_000, net: 259_000_000, financial:  63_000_000, realestate: 289_000_000, isCurrent: false },
+  { date: '25.06', total: 361_000_000, debt:  90_000_000, net: 271_000_000, financial:  70_000_000, realestate: 291_000_000, isCurrent: false },
+  { date: '26.04', total: 382_500_000, debt:  87_000_000, net: 295_500_000, financial:  82_500_000, realestate: 300_000_000, isCurrent: true  },
 ]
 
 // ─── 2030 목표 ────────────────────────────────────────────────
