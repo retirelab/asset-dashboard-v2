@@ -1,0 +1,32 @@
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css');
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root { color-scheme: dark; }
+* { box-sizing: border-box; }
+html { font-size: 14px; -webkit-font-smoothing: antialiased; }
+body { background-color: #0f0f0e; color: #f0ede8; min-height: 100vh; margin: 0; }
+
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 4px; }
+
+.num { font-family: 'DM Mono', monospace; font-variant-numeric: tabular-nums; letter-spacing: -0.01em; }
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fade-in { animation: fadeInUp 0.45s ease both; }
+.fade-in-1 { animation-delay: 0.05s; }
+.fade-in-2 { animation-delay: 0.12s; }
+.fade-in-3 { animation-delay: 0.19s; }
+.fade-in-4 { animation-delay: 0.26s; }
+.fade-in-5 { animation-delay: 0.33s; }
+.fade-in-6 { animation-delay: 0.40s; }
+.fade-in-7 { animation-delay: 0.47s; }
+.fade-in-8 { animation-delay: 0.54s; }
+.fade-in-9 { animation-delay: 0.61s; }
