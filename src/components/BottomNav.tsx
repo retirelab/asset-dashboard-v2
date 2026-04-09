@@ -35,30 +35,42 @@ export default function BottomNav({ active, onChange }: Props) {
 
   return (
     <nav
-      className={`fixed bottom-0 left-1/2 -translate-x-1/2 w-full z-50 border-t flex ${
-        isDark ? 'bg-dk-card border-dk-border' : 'bg-white border-lt-border'
+      className={`fixed bottom-0 left-1/2 -translate-x-1/2 w-full z-50 border-t ${
+        isDark
+          ? 'bg-dk-card border-dk-border'
+          : 'bg-white/90 backdrop-blur-xl border-lt-border shadow-[0_-8px_32px_rgba(0,0,0,0.04)]'
       }`}
       style={{ maxWidth: 430 }}
     >
-      {tabs.map((tab, i) => {
-        const isActive = active === i
-        return (
-          <button
-            key={tab.label}
-            onClick={() => onChange(i)}
-            className="flex-1 flex flex-col items-center justify-center py-2 gap-0.5 transition-colors"
-          >
-            <span className={isActive ? 'text-accent-blue' : isDark ? 'text-dk-muted' : 'text-lt-muted'}>
-              {tab.icon(isActive)}
-            </span>
-            <span className={`text-[10px] font-medium ${
-              isActive ? 'text-accent-blue' : isDark ? 'text-dk-muted' : 'text-lt-muted'
-            }`}>
-              {tab.label}
-            </span>
-          </button>
-        )
-      })}
+      <div className="flex h-[64px]">
+        {tabs.map((tab, i) => {
+          const isActive = active === i
+          const activeColor = isDark ? '#3182F6' : '#1E293B'
+          const inactiveColor = isDark ? '#6B6B75' : '#94A3B8'
+
+          return (
+            <button
+              key={tab.label}
+              onClick={() => onChange(i)}
+              className="flex-1 flex flex-col items-center justify-center gap-0.5 relative active-scale transition-colors"
+            >
+              {/* 활성 인디케이터 — 상단 선 (라이트 모드 스타일) */}
+              {isActive && !isDark && (
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-10 h-0.5 rounded-b-full bg-slate-900" />
+              )}
+              <span style={{ color: isActive ? activeColor : inactiveColor }}>
+                {tab.icon(isActive)}
+              </span>
+              <span
+                className="text-[10px] font-black"
+                style={{ color: isActive ? activeColor : inactiveColor }}
+              >
+                {tab.label}
+              </span>
+            </button>
+          )
+        })}
+      </div>
     </nav>
   )
 }

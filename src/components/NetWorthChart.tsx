@@ -1,5 +1,12 @@
-import { useState } from 'react'
-import { netWorthHistory } from '../data/assetData'
+import React, { useState, useEffect } from 'react'
+
+// --- Mock 데이터 (기존 assetData 참조 구조 유지 및 독립 실행용) ---
+const netWorthHistory = [
+  { date: '24.01', total: 410000000, net: 330000000, debt: 80000000, financial: 65000000, realestate: 345000000 },
+  { date: '24.02', total: 425000000, net: 345000000, debt: 80000000, financial: 70000000, realestate: 355000000 },
+  { date: '24.03', total: 440000000, net: 360000000, debt: 80000000, financial: 75000000, realestate: 365000000 },
+  { date: '24.04', total: 469500000, net: 382500000, debt: 87000000, financial: 82500000, realestate: 387000000 },
+]
 
 const legends = [
   { key: 'net'        as const, label: '순자산',   color: '#0DC381', dash: false },
@@ -16,8 +23,13 @@ const fmt = (n: number) =>
 
 export default function NetWorthChart() {
   const [active, setActive] = useState<Set<string>>(
-    new Set(['total', 'net', 'debt', 'financial', 'realestate'])
+    new Set(['total', 'net', 'debt'])
   )
+  const [isLoaded, setIsLoaded] = useState(false)
+
+  useEffect(() => {
+    setIsLoaded(true)
+  }, [])
 
   const toggle = (key: string) =>
     setActive(prev => {
@@ -26,12 +38,13 @@ export default function NetWorthChart() {
       return n
     })
 
-  const W = 560; const H = 140
-  const padL = 44; const padR = 8; const padT = 12; const padB = 28
+  const W = 560; const H = 180
+  const padL = 48; const padR = 12; const padT = 20; const padB = 32
 
   const activeLegends = legends.filter(l => active.has(l.key))
   const allVals = netWorthHistory.flatMap(d => activeLegends.map(l => d[l.key]))
-  const max = allVals.length ? Math.max(...allVals) : 400_000_000
+  const max = allVals.length ? Math.max(...allVals) * 1.1 : 500_000_000
+  
   const toY = (v: number) => padT + (1 - v / max) * (H - padT - padB)
   const toX = (i: number) => padL + i * ((W - padL - padR) / (netWorthHistory.length - 1))
 
@@ -41,24 +54,26 @@ export default function NetWorthChart() {
       .join(' ')
 
   return (
-    <div>
-      {/* 범례 버튼 */}
-      <div className="flex flex-wrap gap-2 mb-3">
+    <div className={`bg-white rounded-[28px] p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white transition-all duration-700 ${isLoaded ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'}`}>
+      <div className="mb-6">
+        <h3 className="text-lg font-extrabold text-[#191f28] mb-1">자산 흐름</h3>
+        <p className="text-[#8b95a1] text-xs font-bold">최근 4개월간의 자산 변화입니다</p>
+      </div>
+
+      {/* 토스 스타일 칩 (범례 버튼) */}
+      <div className="flex flex-wrap gap-2 mb-8">
         {legends.map(l => {
           const on = active.has(l.key)
           return (
             <button
               key={l.key}
               onClick={() => toggle(l.key)}
-              className="flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-medium transition-all"
-              style={{
-                backgroundColor: on ? `${l.color}18` : '#F2F4F6',
-                color: on ? l.color : '#8B95A1',
-                border: `1px solid ${on ? l.color + '40' : 'transparent'}`,
-              }}
+              className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-[11px] font-extrabold transition-all active:scale-95 ${
+                on ? 'bg-[#f2f4f7] text-[#191f28]' : 'bg-transparent text-[#adb5bd]'
+              }`}
             >
-              <div className="w-2 h-[2px] rounded-full"
-                style={{ backgroundColor: on ? l.color : '#C5CCD4' }} />
+              <div className="w-2.5 h-2.5 rounded-full"
+                style={{ backgroundColor: on ? l.color : '#e5e8eb' }} />
               {l.label}
             </button>
           )
@@ -66,76 +81,84 @@ export default function NetWorthChart() {
       </div>
 
       {/* SVG 차트 */}
-      <svg viewBox={`0 0 ${W} ${H}`} className="w-full" style={{ height: 150 }}>
-        <defs>
-          {legends.map(l => (
-            <linearGradient key={l.key} id={`g-${l.key}`} x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%"   stopColor={l.color} stopOpacity="0.12" />
-              <stop offset="100%" stopColor={l.color} stopOpacity="0" />
-            </linearGradient>
+      <div className="relative h-[200px]">
+        <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-full overflow-visible">
+          <defs>
+            {legends.map(l => (
+              <linearGradient key={l.key} id={`g-${l.key}`} x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%"   stopColor={l.color} stopOpacity="0.15" />
+                <stop offset="100%" stopColor={l.color} stopOpacity="0" />
+              </linearGradient>
+            ))}
+          </defs>
+
+          {/* 가이드 라인 */}
+          {[0, 0.5, 1].map(r => (
+            <line key={r}
+              x1={padL} y1={toY(max * r)}
+              x2={W - padR} y2={toY(max * r)}
+              stroke="#f2f4f7" strokeWidth="1"
+            />
           ))}
-        </defs>
 
-        {/* 보조선 */}
-        {[0.25, 0.5, 0.75, 1].map(r => (
-          <line key={r}
-            x1={padL} y1={toY(max * r)}
-            x2={W - padR} y2={toY(max * r)}
-            stroke="#E5E8EB" strokeWidth="0.5"
-          />
-        ))}
+          {/* Y축 레이블 */}
+          {[0, 0.5, 1].map(r => (
+            <text key={r}
+              x={padL - 8} y={toY(max * r) + 4}
+              textAnchor="end" fontSize="10"
+              fontWeight="700" fill="#adb5bd"
+            >
+              {fmt(max * r)}
+            </text>
+          ))}
 
-        {/* Y축 레이블 */}
-        {[0.5, 1].map(r => (
-          <text key={r}
-            x={padL - 4} y={toY(max * r) + 3}
-            textAnchor="end" fontSize="9"
-            fontFamily="SUIT" fill="#8B95A1"
-          >
-            {fmt(max * r)}
-          </text>
-        ))}
-
-        {/* 면적 + 선 */}
-        {activeLegends.map(l => (
-          <g key={l.key}>
-            <path
-              d={`${line(l.key)} L${toX(netWorthHistory.length - 1).toFixed(1)},${toY(0).toFixed(1)} L${padL},${toY(0).toFixed(1)} Z`}
-              fill={`url(#g-${l.key})`}
-            />
-            <path
-              d={line(l.key)} fill="none"
-              stroke={l.color} strokeWidth="2"
-              strokeLinecap="round" strokeLinejoin="round"
-              strokeDasharray={l.dash ? '4 3' : undefined}
-            />
-          </g>
-        ))}
-
-        {/* 마지막 포인트 강조 */}
-        {activeLegends.map(l => {
-          const last = netWorthHistory[netWorthHistory.length - 1]
-          const x = toX(netWorthHistory.length - 1)
-          const y = toY(last[l.key])
-          return (
-            <g key={l.key}>
-              <circle cx={x} cy={y} r={3.5} fill={l.color} />
-              <circle cx={x} cy={y} r={7} fill={l.color} fillOpacity={0.15} />
+          {/* 면적 + 선 애니메이션 */}
+          {activeLegends.map((l, idx) => (
+            <g key={l.key} className="transition-opacity duration-500">
+              <path
+                d={`${line(l.key)} L${toX(netWorthHistory.length - 1).toFixed(1)},${toY(0).toFixed(1)} L${padL},${toY(0).toFixed(1)} Z`}
+                fill={`url(#g-${l.key})`}
+                className={`transition-all duration-1000 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}
+              />
+              <path
+                d={line(l.key)} fill="none"
+                stroke={l.color} strokeWidth="3"
+                strokeLinecap="round" strokeLinejoin="round"
+                strokeDasharray={l.dash ? '6 4' : undefined}
+                className="transition-all duration-1000"
+                style={{ 
+                  strokeDasharray: isLoaded ? (l.dash ? '6 4' : '0') : '1000',
+                  strokeDashoffset: isLoaded ? '0' : '1000'
+                }}
+              />
             </g>
-          )
-        })}
+          ))}
 
-        {/* X축 날짜 */}
-        {netWorthHistory.map((d, i) => (
-          <text key={d.date}
-            x={toX(i)} y={H - 4}
-            textAnchor="middle" fontSize="10"
-            fontFamily="SUIT" fill="#8B95A1"
-          >
-            {d.date}
-          </text>
-        ))}
-      </svg>
+          {/* 포인트 강조 */}
+          {activeLegends.map(l => {
+            const last = netWorthHistory[netWorthHistory.length - 1]
+            const x = toX(netWorthHistory.length - 1)
+            const y = toY(last[l.key])
+            return (
+              <g key={l.key} className="animate-pulse">
+                <circle cx={x} cy={y} r={4} fill={l.color} stroke="white" strokeWidth="2" />
+                <circle cx={x} cy={y} r={8} fill={l.color} fillOpacity={0.1} />
+              </g>
+            )
+          })}
+
+          {/* X축 날짜 */}
+          {netWorthHistory.map((d, i) => (
+            <text key={d.date}
+              x={toX(i)} y={H - 4}
+              textAnchor="middle" fontSize="11"
+              fontWeight="700" fill="#adb5bd"
+            >
+              {d.date}
+            </text>
+          ))}
+        </svg>
+      </div>
     </div>
   )
 }

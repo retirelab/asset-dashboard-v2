@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&display=swap');
 @import url('https://cdn.jsdelivr.net/gh/sunn-us/SUIT/fonts/variable/woff2/SUIT-Variable.css');
 @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&display=swap');
 
@@ -7,23 +8,38 @@
 
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 html { font-size: 14px; -webkit-font-smoothing: antialiased; }
-body { margin: 0; min-height: 100vh; }
-
 body {
-  background-color: #F2F4F6;
-  color: #191F28;
+  margin: 0;
+  min-height: 100vh;
+  font-family: 'Nanum Gothic', 'SUIT', system-ui, sans-serif;
+  /* 라이트 기본 */
+  background-color: #F8FAFC;
+  color: #0F172A;
 }
 
+/* 다크 모드 */
 body.dark {
   background-color: #0A0A0B;
   color: #FFFFFF;
 }
 
-.num { font-family: 'DM Mono', monospace; font-variant-numeric: tabular-nums; }
+.num {
+  font-family: 'DM Mono', monospace;
+  font-variant-numeric: tabular-nums;
+}
 
+.hero-num {
+  font-family: 'Nanum Gothic', sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+/* 라이트 스크롤바 */
 ::-webkit-scrollbar { width: 3px; height: 3px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: rgba(128,128,128,0.3); border-radius: 3px; }
+::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15); border-radius: 3px; }
+body.dark ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); }
+
 .hide-scroll::-webkit-scrollbar { display: none; }
 .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
 
@@ -37,3 +53,19 @@ body.dark {
 .delay-3 { animation-delay: 0.15s; }
 .delay-4 { animation-delay: 0.20s; }
 .delay-5 { animation-delay: 0.25s; }
+
+/* 라이트 카드 shadow */
+.card-light {
+  background: #fff;
+  border: 1px solid #E2E8F0;
+  border-radius: 16px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+}
+
+/* active scale (버튼 터치 피드백) */
+.active-scale {
+  transition: transform 0.1s;
+}
+.active-scale:active {
+  transform: scale(0.97);
+}

@@ -1,24 +1,32 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Chart, registerables } from 'chart.js'
-import { netWorthHistory, monthlyReturns } from '../data/assetData'
 import { useTheme } from '../context/ThemeContext'
+import { netWorthHistory, monthlyReturns } from '../data/assetData'
 
 Chart.register(...registerables)
 
 export default function AssetChart() {
   const { isDark } = useTheme()
-  const lineRef = useRef<HTMLCanvasElement>(null)
-  const barRef  = useRef<HTMLCanvasElement>(null)
+  const lineRef   = useRef<HTMLCanvasElement>(null)
+  const barRef    = useRef<HTMLCanvasElement>(null)
   const lineChart = useRef<Chart | null>(null)
   const barChart  = useRef<Chart | null>(null)
+  const [isLoaded, setIsLoaded] = useState(false)
 
-  const grid  = isDark ? '#222226' : '#E5E8EB'
-  const label = isDark ? '#6B6B75' : '#8B95A1'
+  const avgReturn = Math.round(
+    monthlyReturns.reduce((s, d) => s + d.amount, 0) / monthlyReturns.length / 10_000
+  )
 
   useEffect(() => {
+    setIsLoaded(true)
     if (!lineRef.current || !barRef.current) return
+
     lineChart.current?.destroy()
     barChart.current?.destroy()
+
+    const labelColor = isDark ? '#6B6B75' : '#adb5bd'
+    const gridColor  = isDark ? '#2A2A2E' : '#f2f4f7'
+    const tooltipBg  = isDark ? '#1A1A1C' : '#191f28'
 
     lineChart.current = new Chart(lineRef.current, {
       type: 'line',
@@ -29,50 +37,51 @@ export default function AssetChart() {
             label: '총자산',
             data: netWorthHistory.map(d => d.total / 1_0000_0000),
             borderColor: '#3182F6',
-            backgroundColor: 'rgba(49,130,246,0.08)',
-            fill: true, tension: 0.4, borderWidth: 2,
-            pointRadius: 3, pointBackgroundColor: '#3182F6',
+            backgroundColor: 'rgba(49,130,246,0.05)',
+            fill: true, tension: 0.4, borderWidth: 3,
+            pointRadius: 0, hoverRadius: 5,
           },
           {
             label: '순자산',
             data: netWorthHistory.map(d => d.net / 1_0000_0000),
             borderColor: '#0DC381',
-            backgroundColor: 'rgba(13,195,129,0.08)',
-            fill: true, tension: 0.4, borderWidth: 2,
-            pointRadius: 3, pointBackgroundColor: '#0DC381',
-          },
-          {
-            label: '총부채',
-            data: netWorthHistory.map(d => d.debt / 1_0000_0000),
-            borderColor: '#F04452',
-            borderDash: [4, 3],
-            backgroundColor: 'transparent',
-            fill: false, tension: 0.4, borderWidth: 1.5,
-            pointRadius: 2, pointBackgroundColor: '#F04452',
+            backgroundColor: 'rgba(13,195,129,0.05)',
+            fill: true, tension: 0.4, borderWidth: 3,
+            pointRadius: 0, hoverRadius: 5,
           },
         ],
       },
       options: {
         responsive: true,
         maintainAspectRatio: false,
+        animation: { duration: 1500, easing: 'easeOutQuart' },
         plugins: {
           legend: { display: false },
           tooltip: {
-            backgroundColor: isDark ? '#1A1A1C' : '#fff',
-            titleColor: isDark ? '#fff' : '#191F28',
-            bodyColor: isDark ? '#B0B0B8' : '#4E5968',
-            borderColor: isDark ? '#333' : '#E5E8EB',
-            borderWidth: 1, padding: 10,
+            backgroundColor: tooltipBg,
+            padding: 12,
+            titleFont: { size: 12, weight: 'bold' },
+            bodyFont: { size: 12, weight: 'bold' },
+            cornerRadius: 12,
+            displayColors: true,
             callbacks: {
               label: ctx => ` ${ctx.dataset.label}: ${(ctx.parsed.y ?? 0).toFixed(1)}억`,
             },
           },
         },
         scales: {
-          x: { grid: { color: grid }, ticks: { color: label, font: { size: 10 } } },
+          x: {
+            grid: { display: false },
+            ticks: { color: labelColor, font: { size: 11, weight: 'bold' } },
+          },
           y: {
-            grid: { color: grid },
-            ticks: { color: label, font: { size: 10 }, callback: v => `${v}억` },
+            border: { display: false },
+            grid: { color: gridColor },
+            ticks: {
+              color: labelColor,
+              font: { size: 11, weight: 'bold' },
+              callback: v => `${v}억`,
+            },
           },
         },
       },
@@ -85,23 +94,22 @@ export default function AssetChart() {
         datasets: [{
           data: monthlyReturns.map(d => d.amount / 10_000),
           backgroundColor: monthlyReturns.map(d =>
-            d.amount >= 0 ? 'rgba(240,68,82,0.75)' : 'rgba(49,130,246,0.75)'
+            d.amount >= 0 ? '#f04452' : '#3182f6'
           ),
-          borderRadius: 3,
-          borderSkipped: false,
+          borderRadius: 8,
+          barThickness: 20,
         }],
       },
       options: {
         responsive: true,
         maintainAspectRatio: false,
+        animation: { duration: 1500, easing: 'easeOutQuart' },
         plugins: {
           legend: { display: false },
           tooltip: {
-            backgroundColor: isDark ? '#1A1A1C' : '#fff',
-            titleColor: isDark ? '#fff' : '#191F28',
-            bodyColor: isDark ? '#B0B0B8' : '#4E5968',
-            borderColor: isDark ? '#333' : '#E5E8EB',
-            borderWidth: 1,
+            backgroundColor: tooltipBg,
+            padding: 12,
+            cornerRadius: 12,
             callbacks: {
               label: ctx => {
                 const v = ctx.parsed.y ?? 0
@@ -111,10 +119,18 @@ export default function AssetChart() {
           },
         },
         scales: {
-          x: { grid: { display: false }, ticks: { color: label, font: { size: 10 } } },
+          x: {
+            grid: { display: false },
+            ticks: { color: labelColor, font: { size: 11, weight: 'bold' } },
+          },
           y: {
-            grid: { color: grid },
-            ticks: { color: label, font: { size: 10 }, callback: v => `${v}만` },
+            border: { display: false },
+            grid: { color: gridColor },
+            ticks: {
+              color: labelColor,
+              font: { size: 11, weight: 'bold' },
+              callback: v => `${v}만`,
+            },
           },
         },
       },
@@ -126,20 +142,59 @@ export default function AssetChart() {
     }
   }, [isDark])
 
+  const cardStyle = isDark
+    ? 'bg-dk-card border border-dk-border rounded-[28px] p-8 transition-all duration-1000'
+    : 'bg-white rounded-[28px] p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white transition-all duration-1000'
+
+  const t = isDark ? 'text-dk-text'  : 'text-[#191f28]'
+  const s = isDark ? 'text-dk-sub'   : 'text-[#4e5968]'
+  const m = isDark ? 'text-dk-muted' : 'text-[#8b95a1]'
+
   return (
-    <div className="space-y-4">
-      <div>
-        <p className={`text-[11px] font-medium mb-2 ${isDark ? 'text-dk-muted' : 'text-lt-muted'}`}>
-          순자산 추이 (억원)
-        </p>
-        <div className="h-[160px]"><canvas ref={lineRef} /></div>
+    <div className={`space-y-6 transition-all duration-700 ${
+      isLoaded ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
+    }`}>
+
+      {/* 순자산 추이 카드 */}
+      <div className={cardStyle}>
+        <div className="flex items-center gap-2 mb-6">
+          <div className="w-1.5 h-6 bg-[#3182f6] rounded-full" />
+          <h3 className={`text-xl font-extrabold ${t}`}>순자산 변화 추이</h3>
+        </div>
+        <div className="h-[200px] w-full">
+          <canvas ref={lineRef} />
+        </div>
+        <div className="flex justify-center gap-6 mt-6">
+          {[
+            { label: '총자산', color: '#3182f6' },
+            { label: '순자산', color: '#0dc381' },
+          ].map(l => (
+            <div key={l.label} className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded-full" style={{ backgroundColor: l.color }} />
+              <span className={`text-xs font-bold ${s}`}>{l.label}</span>
+            </div>
+          ))}
+        </div>
       </div>
-      <div>
-        <p className={`text-[11px] font-medium mb-2 ${isDark ? 'text-dk-muted' : 'text-lt-muted'}`}>
-          월별 수익 (만원)
+
+      {/* 월별 수익 카드 */}
+      <div className={cardStyle}>
+        <div className="flex items-center gap-2 mb-6">
+          <div className="w-1.5 h-6 bg-[#f04452] rounded-full" />
+          <h3 className={`text-xl font-extrabold ${t}`}>월별 투자 수익</h3>
+        </div>
+        <div className="h-[160px] w-full">
+          <canvas ref={barRef} />
+        </div>
+        <p className={`mt-4 text-[11px] font-bold text-center ${m}`}>
+          최근 {monthlyReturns.length}개월 평균{' '}
+          <span className={avgReturn >= 0 ? 'text-[#f04452]' : 'text-[#3182f6]'}>
+            {avgReturn >= 0 ? '+' : ''}{avgReturn}만원
+          </span>
+          의 수익을 올렸어요
         </p>
-        <div className="h-[100px]"><canvas ref={barRef} /></div>
       </div>
+
     </div>
   )
 }

@@ -3,15 +3,19 @@ import { createContext, useContext, useEffect, useState, type ReactNode } from '
 type Theme = 'light' | 'dark'
 interface ThemeCtx { theme: Theme; toggle: () => void; isDark: boolean }
 
-const Ctx = createContext<ThemeCtx>({ theme: 'light', toggle: () => {}, isDark: false })
+const Ctx = createContext<ThemeCtx>({ theme: 'dark', toggle: () => {}, isDark: true })
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setTheme] = useState<Theme>(() =>
-    (localStorage.getItem('theme') as Theme) || 'light'
+    (localStorage.getItem('theme') as Theme) || 'dark'
   )
 
   useEffect(() => {
-    document.body.classList.toggle('dark', theme === 'dark')
+    if (theme === 'dark') {
+      document.body.classList.remove('light')
+    } else {
+      document.body.classList.add('light')
+    }
     localStorage.setItem('theme', theme)
   }, [theme])
 
