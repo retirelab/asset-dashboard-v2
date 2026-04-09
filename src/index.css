@@ -1,32 +1,39 @@
 @import url('https://cdn.jsdelivr.net/gh/sunn-us/SUIT/fonts/variable/woff2/SUIT-Variable.css');
-@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-:root { color-scheme: light; }
-* { box-sizing: border-box; }
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 html { font-size: 14px; -webkit-font-smoothing: antialiased; }
-body { background-color: #F2F4F6; color: #191F28; min-height: 100vh; margin: 0; }
+body { margin: 0; min-height: 100vh; }
 
-::-webkit-scrollbar { width: 4px; height: 4px; }
+body {
+  background-color: #F2F4F6;
+  color: #191F28;
+}
+
+body.dark {
+  background-color: #0A0A0B;
+  color: #FFFFFF;
+}
+
+.num { font-family: 'DM Mono', monospace; font-variant-numeric: tabular-nums; }
+
+::-webkit-scrollbar { width: 3px; height: 3px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15); border-radius: 4px; }
+::-webkit-scrollbar-thumb { background: rgba(128,128,128,0.3); border-radius: 3px; }
+.hide-scroll::-webkit-scrollbar { display: none; }
+.hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
 
-.num { font-family: 'DM Mono', monospace; font-variant-numeric: tabular-nums; letter-spacing: -0.01em; }
-
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(10px); }
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(8px); }
   to   { opacity: 1; transform: translateY(0); }
 }
-.fade-in { animation: fadeInUp 0.45s ease both; }
-.fade-in-1 { animation-delay: 0.05s; }
-.fade-in-2 { animation-delay: 0.12s; }
-.fade-in-3 { animation-delay: 0.19s; }
-.fade-in-4 { animation-delay: 0.26s; }
-.fade-in-5 { animation-delay: 0.33s; }
-.fade-in-6 { animation-delay: 0.40s; }
-.fade-in-7 { animation-delay: 0.47s; }
-.fade-in-8 { animation-delay: 0.54s; }
-.fade-in-9 { animation-delay: 0.61s; }
+.fade-up { animation: fadeUp 0.35s ease both; }
+.delay-1 { animation-delay: 0.05s; }
+.delay-2 { animation-delay: 0.10s; }
+.delay-3 { animation-delay: 0.15s; }
+.delay-4 { animation-delay: 0.20s; }
+.delay-5 { animation-delay: 0.25s; }

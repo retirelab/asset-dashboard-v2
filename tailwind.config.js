@@ -1,6 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
+  darkMode: 'class',
   theme: {
     extend: {
       fontFamily: {
@@ -8,26 +9,32 @@ export default {
         mono: ['"DM Mono"', 'monospace'],
       },
       colors: {
-        surface: {
-          bg:    '#F2F4F6',
-          card:  '#FFFFFF',
-          hover: '#F8F9FA',
-          line:  'rgba(0,0,0,0.06)',
+        lt: {
+          bg:     '#F2F4F6',
+          card:   '#FFFFFF',
+          border: 'rgba(0,0,0,0.07)',
+          text:   '#191F28',
+          sub:    '#4E5968',
+          muted:  '#8B95A1',
         },
-        ink: {
-          primary:   '#191F28',
-          secondary: '#4E5968',
-          muted:     '#8B95A1',
-          label:     '#6B7684',
+        dk: {
+          bg:     '#0A0A0B',
+          card:   '#111113',
+          border: '#222226',
+          text:   '#FFFFFF',
+          sub:    '#B0B0B8',
+          muted:  '#6B6B75',
         },
         accent: {
           blue:   '#3182F6',
           green:  '#0DC381',
-          amber:  '#FF9F0A',
           red:    '#F04452',
-          teal:   '#00B4D8',
+          orange: '#FF6B00',
+          purple: '#A259FF',
+          amber:  '#FF9F0A',
         },
       },
+      maxWidth: { app: '430px' },
     },
   },
   plugins: [],
